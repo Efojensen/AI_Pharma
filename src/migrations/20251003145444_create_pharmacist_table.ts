@@ -4,12 +4,12 @@ export async function up() {
     try {
         await db.query(`
             CREATE TABLE IF NOT EXISTS pharmacists (
-                id SERIAL PRIMARY KEY
-                name VARCHAR(100) NOT NULL
-                email VARCHAR(100) UNIQUE NOT NULL
-                title TEXT
-                pharmacy_id INT REFERENCES pharmacy(id)
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                id SERIAL PRIMARY KEY,
+                name TEXT NOT NULL,
+                email VARCHAR(255) UNIQUE NOT NULL,
+                title varchar(255) NOT NULL,
+                pharmacy_id INT REFERENCES pharmacy(id) ON DELETE CASCADE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             )
         `)
     } catch(error) {
