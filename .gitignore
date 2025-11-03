@@ -3,3 +3,6 @@
 
 # For environment secrets
 .env
+
+# Project dependencies
+node_modules
