@@ -1,0 +1,5 @@
+# For vscode
+**.vscode
+
+# For environment secrets
+.env
