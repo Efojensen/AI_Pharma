@@ -1,59 +1,47 @@
 import db from '../config/database/db'
 
 export async function up() {
+    const client = await db.connect()
     try {
-        await db.query(`
-            CREATE TYPE UNIT AS ENUM (
-                'mcg',
-                'mg',
-                'ml',
-                'g',
-                'l'
-            )
+        await client.query('BEGIN')
 
-            CREATE TYPE FORM AS ENUM (
-                'cream',
-                'drops',
-                'syrup',
-                'saline',
-                'tablet',
-                'capsule',
-                'inhaler',
-                'ointment',
-                'injection'
-            )
-
-            CREATE TYPE ROUTE AS ENUM (
-                'oral',
-                'otic',
-                'nasal',
-                'buccal',
-                'rectal',
-                'ocular',
-                'vaginal',
-                'inhaled',
-                'cutaneous',
-                'sublingual',
-                'transdermal',
-                'intravenous',
-                'intrathecal',
-                'subcutaneous',
-                'intramuscular'
-            )
-
+        await client.query(`
             CREATE TABLE IF NOT EXISTS dosages(
-                dosage_id SERIAL INT PRIMARY KEY,
-                drug_id INT REFERENCES drugs(id),
-                strength DECIMAL(10, 3)
-                unit UNIT NOT NULL,
-                form FORM ,
-                frequency TEXT,
-                route ROUTE
-                condition INT REFERENCES conditions(id) --condition treated by this particular dosage
-                UNIQUE(drug_id, strength, unit, form)
+                dosage_id SERIAL PRIMARY KEY,
+                drug_id INT NOT NULL REFERENCES drugs(id) ON DELETE CASCADE,
+                strength DECIMAL(10, 3) CHECK (strength > 0),
+                unit unit_enum NOT NULL,
+                form form_enum NOT NULL,
+                frequency TEXT NOT NULL,
+                route route_enum NOT NULL,
+                UNIQUE(drug_id, strength, unit, form, route)
             )
         `)
+
+        await client.query('COMMIT')
     } catch (error) {
-        console.error(error)
+        await client.query('ROLLBACK');
+        console.error('Migration failed:', error);
+        throw error;
+    } finally {
+        client.release();
     }
 }
+
+export async function down() {
+    const client = await db.connect()
+
+    try {
+        await client.query('BEGIN');
+
+        await client.query('DROP TABLE IF EXISTS dosages')
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('Migration failed:', error);
+        throw error;
+    } finally {
+        client.release();
+    }
+}
+
+up()
