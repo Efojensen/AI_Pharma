@@ -3,14 +3,14 @@ import db from '../config/database/db'
 export async function up() {
     try {
         await db.query(`
-            CREATE TYPE pt_population AS ENUM (
-                'neonatal',
+            CREATE TYPE PT_POPULATION AS ENUM (
+                'adult',
                 'infant',
+                'neonatal',
                 'pediatric',
+                'geriatric',
                 'adolescent',
                 'young adult',
-                'adult',
-                'geriatric',
             )
 
             CREATE TABLE IF NOT EXISTS drugs(
@@ -19,7 +19,9 @@ export async function up() {
                 brand_name TEXT NOT NULL,
                 generic_name TEXT,
                 warnings TEXT,
-                patient_population pt_population
+                side_effects INT REFERENCES side_effects(id),
+                approved_indications INT REFERENCES conditions(id),
+                patient_population PT_POPULATION,
                 off_label_uses TEXT,
             )
         `)
