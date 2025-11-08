@@ -7,7 +7,7 @@ export async function up() {
 
         await client.query(`
             CREATE TABLE IF NOT EXISTS dosages(
-                dosage_id SERIAL PRIMARY KEY,
+                id SERIAL PRIMARY KEY,
                 drug_id INT NOT NULL REFERENCES drugs(id) ON DELETE CASCADE,
                 strength DECIMAL(10, 3) CHECK (strength > 0),
                 unit unit_enum NOT NULL,
