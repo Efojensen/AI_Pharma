@@ -1,32 +1,40 @@
 import db from '../config/database/db'
 
 export async function up() {
+    const client = await db.connect()
     try {
-        await db.query(`
-
-            CREATE TYPE pt_type AS ENUM (
-                'Male',
-                'Female',
-                'Pregnant',
-                'Postpartum',
-            )
-
+        await client.query(`
             CREATE TABLE IF NOT EXISTS patients (
                 id SERIAL PRIMARY KEY,
-                drug_id INT REFERENCES drugs(id),
-                patient_type pt_type,
-            )
+                first_name TEXT,
+                last_name TEXT,
+                date_of_birth DATE,
+                patient_type pt_type_enum,
+                created_at TIMESTAMPTZ DEFAULT NOW(),
+                updated_at TIMESTAMPTZ DEFAULT NOW()
+            );
         `)
+
+        await client.query('COMMIT')
     } catch (error) {
-        console.error(error)
+        await client.query('ROLLBACK');
+        console.error('Migration failed:', error);
+        throw error;
+    } finally {
+        client.release();
     }
 }
 
 export async function down() {
+    const client = await db.connect()
     try {
         await db.query('DROP TABLE IF EXISTS patients')
     } catch (error) {
-        console.error(error)
+        await client.query('ROLLBACK');
+        console.error('Migration failed:', error);
+        throw error;
+    } finally {
+        client.release();
     }
 }
 
