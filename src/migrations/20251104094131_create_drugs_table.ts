@@ -40,6 +40,9 @@ export async function down() {
 
         await client.query('DROP TABLE IF EXISTS drugs')
 
+        await client.query('DROP INDEX IF EXISTS idx_drugs_brand_name')
+        await client.query('DROP INDEX IF EXISTS idx_drugs_generic_name')
+
         await client.query('COMMIT')
     } catch (error) {
         await client.query('ROLLBACK');
