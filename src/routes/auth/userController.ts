@@ -7,12 +7,6 @@ export async function verifyPharmacy(req: Request, res: Response) {
 
     const salt = process.env["SALT"] || 8
     try {
-        const pharmacies = await client.query(`
-            SELECT name, location, region FROM pharmacies
-            WHERE is_verified = FALSE
-        `)
-
-        res.json(pharmacies)
         let { pharmacy, employees, business, password } = req.body
 
         if (!pharmacy || !employees || !business) {
