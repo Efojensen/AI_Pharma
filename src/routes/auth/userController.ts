@@ -12,7 +12,7 @@ export async function verifyPharmacy(req: Request, res: Response) {
             WHERE is_verified = FALSE
         `)
 
-        console.log(pharmacies)
+        res.json(pharmacies)
         let { pharmacy, employees, business, password } = req.body
 
         if (!pharmacy || !employees || !business) {
