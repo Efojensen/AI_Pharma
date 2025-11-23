@@ -3,6 +3,6 @@ import { getAvailablePharmacies } from "./pharmacyControllers";
 
 const router = Router();
 
-router.post('/', getAvailablePharmacies);
+router.get('/', getAvailablePharmacies);
 
 export default router
