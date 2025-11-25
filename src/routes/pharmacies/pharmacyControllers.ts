@@ -1,5 +1,5 @@
-import db from '../../config/database/config'
 import { Request, Response } from "express";
+import db from '../../config/database/config';
 
 export async function getAvailablePharmacies(req: Request, res: Response) {
     const client = await db.connect();
