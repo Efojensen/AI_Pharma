@@ -1,4 +1,4 @@
-import db from '../config/database/db'
+import db from '../config/database/config'
 
 export async function up() {
 	const client = await db.connect();
