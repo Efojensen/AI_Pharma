@@ -45,10 +45,9 @@ export async function up() {
                 'geriatric',
                 'adolescent',
                 'young_adult'
-            )
+            );
         `);
 
-        // Remove the duplicate pt_type definition
         await client.query(`
             CREATE TYPE unit_enum AS ENUM (
                 'mcg',
@@ -56,8 +55,8 @@ export async function up() {
                 'ml',
                 'g',
                 'l'
-            )
-        `)
+            );
+        `);
 
         await client.query(`
             CREATE TYPE form_enum AS ENUM (
@@ -70,8 +69,8 @@ export async function up() {
                 'inhaler',
                 'ointment',
                 'injection'
-            )
-        `)
+            );
+        `);
 
         await client.query(`
             CREATE TYPE route_enum AS ENUM (
@@ -90,8 +89,8 @@ export async function up() {
                 'intrathecal',
                 'subcutaneous',
                 'intramuscular'
-            )
-        `)
+            );
+        `);
 
         await client.query(`
             CREATE TYPE pt_type_enum AS ENUM (
@@ -99,8 +98,8 @@ export async function up() {
                 'Female',
                 'Pregnant',
                 'Postpartum'
-            )
-        `)
+            );
+        `);
 
         await client.query('COMMIT');
     } catch (error) {
@@ -109,6 +108,30 @@ export async function up() {
         throw error;
     } finally {
         client.release();
+    }
+}
+
+export async function down() {
+    const client = await db.connect()
+
+    try {
+        await client.query('BEGIN')
+
+        await client.query('DROP TYPE IF EXISTS pt_type_enum')
+        await client.query('DROP TYPE IF EXISTS route_enum')
+        await client.query('DROP TYPE IF EXISTS form_enum')
+        await client.query('DROP TYPE IF EXISTS unit_enum')
+        await client.query('DROP TYPE IF EXISTS pt_population_enum')
+        await client.query('DROP TYPE IF EXISTS region_enum')
+        await client.query('DROP TYPE IF EXISTS category_enum')
+
+        await client.query('COMMIT')
+    } catch (error) {
+        await client.query('ROLLBACK')
+        console.error('Rollback failed:', error)
+        throw error
+    } finally {
+        client.release()
     }
 }
 
