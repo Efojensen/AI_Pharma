@@ -3,7 +3,7 @@ import { Request, Response } from 'express'
 import { verifyOnePharmacy } from '../../functions/verifyPharmacy';
 
 export async function verifyPharmacy(req: Request, res: Response) {
-    const salt = process.env["SALT"] || 8
+    const salt = parseInt(process.env["SALT"] || '8')
     try {
         let { pharmacy, business, password, file, email } = req.body
 
