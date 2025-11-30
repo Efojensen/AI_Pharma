@@ -7,7 +7,7 @@ export async function verifyPharmacy(req: Request, res: Response) {
     try {
         let { pharmacy, business, password, file, email } = req.body
 
-        if (!pharmacy || !password || !business || !email ) {
+        if (!pharmacy || !password || !business || !email) {
             res.status(400).json({
                 err: 'pharmacy, email, password, file and business are required'
             })
@@ -17,6 +17,10 @@ export async function verifyPharmacy(req: Request, res: Response) {
         password = await bcrypt.hash(password, salt)
 
         await verifyOnePharmacy(pharmacy, email, password, business)
+
+        res.status(200).json({
+            message: 'Pharmacy verified successfully'
+        })
     } catch (error) {
         res.status(500).json({
             err: error
