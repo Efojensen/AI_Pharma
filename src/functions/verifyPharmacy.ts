@@ -24,11 +24,11 @@ export async function verifyOnePharmacy(receivedPharmacy: string, email: string,
         case 'software_development_and_customization':
             business = 'software_development_and_customization'
             break;
-            case 'customer_support_and_maintenance':
+        case 'customer_support_and_maintenance':
             business = 'customer_support_and_maintenance'
             break;
-            default:
-                business = 'inventory_management'
+        default:
+            business = 'inventory_management'
             break;
         }
 
