@@ -3,7 +3,7 @@ import db from '../config/database/config'
 export async function verifyOnePharmacy(receivedPharmacy: string, email: string, pwdHash: string, business: string) {
     const client = await db.connect();
 
-    business = business.toLowerCase().replace('&', 'and').replace(' ', '_');
+    business = business.toLowerCase().replaceAll('&', 'and').replaceAll(' ', '_');
 
     switch (business) {
         case 'inventory_management':
@@ -24,13 +24,13 @@ export async function verifyOnePharmacy(receivedPharmacy: string, email: string,
         case 'software_development_and_customization':
             business = 'software_development_and_customization'
             break;
-        case 'customer_support_and_maintenance':
+            case 'customer_support_and_maintenance':
             business = 'customer_support_and_maintenance'
             break;
-        default:
-            business = 'inventory_management'
+            default:
+                business = 'inventory_management'
             break;
-    }
+        }
 
     try {
         const query = `
