@@ -9,7 +9,7 @@ export async function verifyOnePharmacy(receivedPharmacy: string, email: string,
     try {
         const query = `
             UPDATE pharmacies
-            SET is_verified = TRUE, email = $1, password_hash = $2, business_type = $3
+            SET is_verified = TRUE, email = $1, password_hash = $2, business_type = $3, updated_at TIMESTAMPTZ DEFAULT NOW()
             WHERE name = $4 AND region = $5 and location = $6;
         `;
 
