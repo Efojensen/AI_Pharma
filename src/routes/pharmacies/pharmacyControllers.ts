@@ -51,3 +51,30 @@ export async function getAvailablePharmacies(req: Request, res: Response) {
         client.release();
     }
 }
+
+export async function getPharmacistPassword (email: string): Promise<string> {
+    const client = await db.connect()
+
+    try {
+        const query = `
+            SELECT password_hash FROM pharmacists
+            WHERE email = $1
+        `
+
+        let result = await client.query(query, [email])
+
+        if (result.rows.length === 0) {
+            throw('no matching email found')
+        }
+
+        const userPwd = result.rows[0].password_hash
+
+        return userPwd
+
+    } catch (error) {
+        console.error('error fetching user pharmacy')
+        throw error
+    } finally {
+        client.release()
+    }
+}
