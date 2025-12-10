@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import db from '../../config/database/config';
+import { PharmacistDetails } from "../../types/types";
 
 export async function getAvailablePharmacies(req: Request, res: Response) {
     const client = await db.connect();
@@ -52,12 +53,12 @@ export async function getAvailablePharmacies(req: Request, res: Response) {
     }
 }
 
-export async function getPharmacistPassword (email: string): Promise<string> {
+export async function getPharmacistDetails (email: string): Promise<PharmacistDetails> {
     const client = await db.connect()
 
     try {
         const query = `
-            SELECT password_hash FROM pharmacists
+            SELECT title, password_hash FROM pharmacists
             WHERE email = $1
         `
 
@@ -68,8 +69,9 @@ export async function getPharmacistPassword (email: string): Promise<string> {
         }
 
         const userPwd = result.rows[0].password_hash
+        const userTitle = result.rows[0].title
 
-        return userPwd
+        return {userPwd, userTitle}
 
     } catch (error) {
         console.error('error fetching user pharmacy')

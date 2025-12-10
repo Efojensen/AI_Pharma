@@ -1,6 +1,8 @@
 import bcrypt from 'bcryptjs'
 import { Request, Response } from 'express'
 import { verifyOnePharmacy } from '../../functions/verifyPharmacy';
+import { getPharmacistDetails } from '../pharmacies/pharmacyControllers';
+import { GenerateToken } from '../../utils/jwt';
 
 export async function verifyPharmacy(req: Request, res: Response) {
     const salt = parseInt(process.env["SALT"] || '8')
@@ -26,5 +28,39 @@ export async function verifyPharmacy(req: Request, res: Response) {
             err: error
         })
         console.log(error)
+    }
+}
+
+export async function loginToPharmacy(req: Request, res: Response) {
+    try {
+        const { email, password } = req.body
+
+        if (!email || !password ) {
+            res.status(400).json({
+                err: 'email and password are required'
+            })
+        }
+
+        const details = await getPharmacistDetails(email)
+
+        const validPassword = await bcrypt.compare(details.userPwd, password)
+
+        if (!validPassword) {
+            res.status(401).json({
+                err: 'invalid email or password'
+            })
+            return
+        }
+
+        const token = GenerateToken(details)
+
+        res.status(200).json({
+            jwt: token,
+            msg: 'login successful'
+        })
+    } catch (error) {
+        res.status(500).json({
+            err: 'something went wrong'
+        })
     }
 }
