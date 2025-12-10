@@ -62,5 +62,6 @@ export async function loginToPharmacy(req: Request, res: Response) {
         res.status(500).json({
             err: 'something went wrong'
         })
+        console.error(error)
     }
 }
